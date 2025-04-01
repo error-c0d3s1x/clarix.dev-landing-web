@@ -1,0 +1,44 @@
+/* Full page black background */
+.blackhole-container {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    background-color: black; /* Full black background */
+  }
+  
+  /* Styling for Coming Soon text */
+  .coming-soon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 3rem; /* Adjusted for a more balanced size */
+    font-family: 'Montserrat', sans-serif; /* Modern font */
+    color: #fff;
+    text-shadow: 
+      0 0 30px rgba(255, 255, 255, 0.8), /* White glow */
+      0 0 60px rgba(255, 255, 255, 0.6),
+      0 0 90px rgba(255, 255, 255, 0.4); /* Larger shadow for more dramatic effect */
+    font-weight: 600; /* Slightly less bold */
+    letter-spacing: 2px; /* Slight spacing between letters */
+    padding: 0; /* Removed padding to eliminate the box */
+    background: none; /* Removed the background */
+    border: none; /* Removed the border */
+    animation: none; /* Removed the fade-in/out animation */
+  }
+  
+  
+  /* Animation for glowing text */
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
