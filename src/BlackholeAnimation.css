@@ -15,7 +15,11 @@
     text-align: center;
     font-size: 3rem; /* Adjusted for a more balanced size */
     font-family: 'Montserrat', sans-serif; /* Modern font */
-    color: #b0b0b0; /* Metallic Silver color */
+    color: #fff;
+    text-shadow: 
+      0 0 30px rgba(255, 255, 255, 0.8), /* White glow */
+      0 0 60px rgba(255, 255, 255, 0.6),
+      0 0 90px rgba(255, 255, 255, 0.4); /* Larger shadow for more dramatic effect */
     font-weight: 600; /* Slightly less bold */
     letter-spacing: 2px; /* Slight spacing between letters */
     padding: 0; /* Removed padding to eliminate the box */
