@@ -1,5 +1,5 @@
 import React from 'react';
-import BlackholeAnimation from './BlackholeAnimation';
+import BlackholeAnimation from '../Blackhole/BlackholeAnimation';
 import './App.css';
 
 function App() {
