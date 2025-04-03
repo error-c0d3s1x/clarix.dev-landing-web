@@ -23,7 +23,13 @@
     border: none; /* Removed the border */
     animation: none; /* Removed the fade-in/out animation */
   }
-  
+
+  .coming-soon h1 {
+    font-family: 'Orbitron', sans-serif; /* Or another font of your choosing */
+    color: #ffffff; /* Bright white stands out well against black */
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); /* Optional: gives a subtle glow */
+    letter-spacing: 3px; /* Increase spacing for a sci-fi feel */
+  } 
   
   
   /* Animation for glowing text */
