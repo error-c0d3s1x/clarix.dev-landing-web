@@ -42,7 +42,7 @@ const BlackholeAnimation = () => {
     };
 
     // Start loading the image (black hole image)
-    image.src = '/images/blackhole.jpg'; // Path to the black hole image in your public folder
+    image.src = '/images/blackhole.png'; // Path to the black hole image in your public folder
 
   }, []);
 
@@ -51,7 +51,7 @@ const BlackholeAnimation = () => {
       <canvas ref={canvasRef}></canvas>
       <img ref={imageRef} alt="Black Hole" style={{ display: 'none' }} />
       <div className="coming-soon">
-        <h1>Coming Soon</h1>
+        <h1>Here it begins.</h1>
       </div>
     </div>
   );
