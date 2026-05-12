@@ -1,43 +1,932 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karnabal Ang Sistema</title>
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+  <style>
+    :root {
+      --bg: #020202;
+      --panel: rgba(4, 9, 7, 0.66);
+      --green: #66ff99;
+      --green-soft: rgba(102, 255, 153, 0.18);
+      --green-faint: rgba(102, 255, 153, 0.075);
+      --red: #ff3030;
+      --red-soft: rgba(255, 48, 48, 0.22);
+      --red-faint: rgba(255, 48, 48, 0.11);
+      --cyan: #00d9ff;
+      --gold: #ffd36a;
+      --white: #f4fff7;
+      --muted: #85a78f;
+      --ash: #9fb5a5;
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+      --page-max: 1480px;
+      --page-gutter: clamp(12px, 1.6vw, 28px);
+      --content-pad: clamp(24px, 3.2vw, 58px);
+    }
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--white);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      background:
+        radial-gradient(circle at 14% 12%, rgba(255, 48, 48, 0.24), transparent 30%),
+        radial-gradient(circle at 86% 74%, rgba(102, 255, 153, 0.13), transparent 34%),
+        radial-gradient(circle at 52% 42%, rgba(255, 48, 48, 0.095), transparent 42%),
+        linear-gradient(135deg, rgba(255, 48, 48, 0.08), transparent 30%, rgba(102, 255, 153, 0.035) 58%, rgba(255, 48, 48, 0.07)),
+        linear-gradient(180deg, #010101 0%, #050505 48%, #010101 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.032) 0,
+        rgba(255, 255, 255, 0.032) 1px,
+        transparent 2px,
+        transparent 5px
+      );
+      mix-blend-mode: overlay;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 19;
+      pointer-events: none;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 48, 48, 0.09),
+        rgba(102, 255, 153, 0.045),
+        rgba(255, 48, 48, 0.09),
+        transparent
+      );
+      animation: sweep 5.8s linear infinite;
+    }
+
+    @keyframes sweep {
+      from { transform: translateX(-120%); }
+      to { transform: translateX(120%); }
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: 18;
+      pointer-events: none;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .bg-mark {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .bg-mark::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        radial-gradient(
+          circle at center,
+          rgba(0, 0, 0, 0) 0 24%,
+          rgba(0, 0, 0, 0.16) 48%,
+          rgba(0, 0, 0, 0.62) 82%
+        );
+    }
+
+    .bg-logo {
+      position: relative;
+      z-index: 0;
+      display: block;
+      width: min(780px, 62vw);
+      height: auto;
+      opacity: 0.62;
+      mix-blend-mode: screen;
+      filter:
+        saturate(1.18)
+        brightness(1.10)
+        contrast(1.12)
+        drop-shadow(0 0 22px rgba(102, 255, 153, 0.34))
+        drop-shadow(0 0 46px rgba(255, 48, 48, 0.24));
+    }
+
+    .page {
+      width: min(var(--page-max), calc(100vw - (var(--page-gutter) * 2)));
+      margin: 24px auto;
+      border: 1px solid rgba(255, 48, 48, 0.28);
+      background:
+        linear-gradient(135deg, rgba(255, 48, 48, 0.06), transparent 26%, rgba(102, 255, 153, 0.026) 55%, rgba(255, 48, 48, 0.048)),
+        linear-gradient(180deg, rgba(102, 255, 153, 0.025), transparent 180px),
+        var(--panel);
+      box-shadow:
+        0 0 76px rgba(255, 48, 48, 0.16),
+        0 0 70px rgba(102, 255, 153, 0.1),
+        inset 0 0 50px rgba(255, 48, 48, 0.045),
+        inset 0 0 44px rgba(102, 255, 153, 0.028);
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(255, 48, 48, 0.28);
+      box-shadow:
+        inset 0 -1px 0 rgba(102, 255, 153, 0.13),
+        0 10px 28px rgba(255, 48, 48, 0.055);
+      padding: 18px var(--content-pad);
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      background: rgba(0, 0, 0, 0.16);
+    }
+
+    .blink {
+      color: var(--green);
+      animation: blink 1.15s steps(2, start) infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .hero {
+      padding: clamp(28px, 4vw, 62px) var(--content-pad) 10px;
+    }
+
+    .kicker {
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--white);
+      font-size: clamp(54px, 7vw, 118px);
+      line-height: 0.84;
+      letter-spacing: -0.095em;
+      text-transform: uppercase;
+      text-shadow:
+        3px 0 var(--red),
+        -3px 0 var(--cyan),
+        0 0 28px rgba(102, 255, 153, 0.42);
+      animation: glitchPulse 3.8s infinite;
+    }
+
+    @keyframes glitchPulse {
+      0%, 90%, 100% {
+        opacity: 1;
+        transform: translateX(0) skewX(0deg);
+        filter: none;
+      }
+
+      91% {
+        opacity: 0.76;
+        transform: translateX(-2px) skewX(-4deg);
+        filter: blur(0.2px);
+      }
+
+      93% {
+        opacity: 0.96;
+        transform: translateX(2px) skewX(3deg);
+      }
+
+      95% {
+        opacity: 0.78;
+        transform: translateX(-1px);
+      }
+    }
+
+    .subline {
+      margin: 24px 0 0;
+      max-width: 920px;
+      color: #c9ffd5;
+      font-size: clamp(15px, 1.35vw, 20px);
+      line-height: 1.7;
+    }
+
+    .subline strong {
+      color: var(--green);
+      font-weight: normal;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 390px);
+      gap: clamp(28px, 4vw, 62px);
+      padding: 22px var(--content-pad) 34px;
+    }
+
+    .manifesto {
+      display: grid;
+      gap: 18px;
+      font-size: clamp(17px, 1.45vw, 22px);
+      line-height: 1.55;
+      max-width: 880px;
+    }
+
+    .manifesto p {
+      margin: 0;
+    }
+
+    .manifesto .verse {
+      color: var(--green);
+      font-size: clamp(26px, 2.65vw, 42px);
+      line-height: 1.18;
+      text-transform: uppercase;
+      letter-spacing: 0.015em;
+      text-shadow: 0 0 18px rgba(102, 255, 153, 0.22);
+    }
+
+    .manifesto .bar {
+      color: #f5fff7;
+      padding-left: 18px;
+      border-left: 2px solid var(--green);
+      background: linear-gradient(90deg, var(--green-faint), transparent 70%);
+    }
+
+    .manifesto .hook {
+      color: #fff0b8;
+      padding: 16px 0 16px 18px;
+      border-left: 2px solid var(--gold);
+      background: linear-gradient(90deg, rgba(255, 211, 106, 0.09), transparent 70%);
+      text-shadow: 0 0 18px rgba(255, 211, 106, 0.13);
+    }
+
+    .manifesto .cut {
+      color: #ffd2d2;
+      padding-left: 18px;
+      border-left: 2px solid var(--red);
+      background: linear-gradient(90deg, var(--red-soft), transparent 70%);
+    }
+
+    .manifesto .final-line {
+      color: white;
+      font-size: clamp(30px, 3.7vw, 56px);
+      line-height: 1.05;
+      text-transform: uppercase;
+      letter-spacing: -0.06em;
+      text-shadow:
+        2px 0 var(--red),
+        -2px 0 var(--cyan),
+        0 0 26px rgba(102, 255, 153, 0.38);
+    }
+
+    .side-card {
+      border: 1px solid rgba(255, 48, 48, 0.26);
+      background:
+        linear-gradient(145deg, rgba(255, 48, 48, 0.095), rgba(0, 0, 0, 0.46) 42%, rgba(102, 255, 153, 0.035)),
+        rgba(0, 0, 0, 0.40);
+      box-shadow:
+        inset 4px 0 0 rgba(255, 48, 48, 0.36),
+        0 0 30px rgba(255, 48, 48, 0.075);
+      align-self: start;
+      position: sticky;
+      top: 18px;
+      overflow: hidden;
+      backdrop-filter: blur(1px);
+    }
+
+    .side-card header {
+      border-bottom: 1px solid rgba(255, 48, 48, 0.24);
+      box-shadow: inset 0 -1px 0 rgba(102, 255, 153, 0.12);
+      padding: 14px 16px;
+      color: var(--green);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    .side-content {
+      padding: 18px 16px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .side-quote {
+      margin: 0;
+      color: #d8ffe1;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .side-list {
+      display: grid;
+      gap: 10px;
+      color: var(--ash);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .side-list span {
+      display: block;
+      padding-left: 14px;
+      border-left: 1px solid var(--green-soft);
+    }
+
+    .side-note {
+      color: #7fa68a;
+      font-size: 12px;
+      line-height: 1.65;
+      border-top: 1px solid var(--green-soft);
+      padding-top: 14px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    button,
+    a.button {
+      border: 1px solid var(--green-soft);
+      background: rgba(0, 0, 0, 0.18);
+      color: var(--white);
+      padding: 12px 14px;
+      font: inherit;
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    button:hover,
+    a.button:hover {
+      background: rgba(102, 255, 153, 0.08);
+      box-shadow: 0 0 18px rgba(102, 255, 153, 0.15);
+    }
+
+    .disclaimer {
+      margin: 0 var(--content-pad) 24px;
+      border-top: 1px solid rgba(255, 48, 48, 0.28);
+      box-shadow: inset 0 1px 0 rgba(102, 255, 153, 0.11);
+      padding-top: 18px;
+      color: var(--ash);
+      font-size: 12px;
+      line-height: 1.7;
+      display: grid;
+      gap: 8px;
+    }
+
+    .disclaimer strong {
+      color: var(--green);
+      font-weight: normal;
+    }
+
+    .footer {
+      border-top: 1px solid rgba(255, 48, 48, 0.3);
+      box-shadow:
+        inset 0 1px 0 rgba(102, 255, 153, 0.11),
+        0 -16px 38px rgba(255, 48, 48, 0.045);
+      padding: 18px var(--content-pad);
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      color: #78a985;
+      font-size: 12px;
+      line-height: 1.6;
+      background: rgba(0, 0, 0, 0.16);
+    }
+
+    .footer strong {
+      color: var(--green);
+      font-weight: normal;
+    }
+
+    .entry-screen {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      z-index: 100;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 50% 42%, rgba(102, 255, 153, 0.12), transparent 28%),
+        radial-gradient(circle at 50% 58%, rgba(255, 48, 48, 0.13), transparent 34%),
+        rgba(0, 0, 0, 0.90);
+      backdrop-filter: blur(4px);
+      text-align: center;
+    }
+
+    .entry-screen.hidden {
+      display: none;
+    }
+
+    .entry-card {
+      width: min(560px, 100%);
+      border: 1px solid rgba(255, 48, 48, 0.34);
+      background:
+        linear-gradient(145deg, rgba(255, 48, 48, 0.10), transparent 38%, rgba(102, 255, 153, 0.06)),
+        rgba(4, 9, 7, 0.94);
+      box-shadow:
+        0 0 60px rgba(255, 48, 48, 0.13),
+        0 0 44px rgba(102, 255, 153, 0.10);
+      padding: clamp(24px, 5vw, 38px);
+    }
+
+    .entry-label {
+      color: var(--green);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .entry-quote {
+      margin: 0 0 22px;
+      color: var(--white);
+      font-size: clamp(23px, 5vw, 38px);
+      line-height: 1.16;
+      letter-spacing: -0.04em;
+      text-shadow:
+        2px 0 var(--red),
+        -2px 0 rgba(102, 255, 153, 0.55),
+        0 0 24px rgba(102, 255, 153, 0.22);
+    }
+
+    .entry-sub {
+      margin: 0 0 26px;
+      color: var(--ash);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .entry-button {
+      width: auto;
+      min-width: 190px;
+      text-align: center;
+      border-color: rgba(102, 255, 153, 0.32);
+      background: rgba(102, 255, 153, 0.04);
+    }
+
+    .entry-button:hover {
+      background: rgba(102, 255, 153, 0.10);
+    }
+
+    @media (max-width: 1080px) {
+      :root {
+        --page-gutter: 14px;
+        --content-pad: clamp(22px, 4vw, 44px);
+      }
+
+      .layout {
+        grid-template-columns: minmax(0, 1fr) minmax(270px, 340px);
+        gap: 30px;
+      }
+
+      .manifesto {
+        max-width: none;
+      }
+    }
+
+    @media (max-width: 880px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .side-card {
+        position: static;
+      }
+    }
+
+    @media (max-width: 720px) {
+      :root {
+        --content-pad: 16px;
+      }
+
+      body {
+        display: block;
+      }
+
+      body::before {
+        background: repeating-linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.025) 0,
+          rgba(255, 255, 255, 0.025) 1px,
+          transparent 2px,
+          transparent 6px
+        );
+      }
+
+      .bg-mark::before {
+        background:
+          radial-gradient(
+            circle at center,
+            rgba(0, 0, 0, 0) 0 20%,
+            rgba(0, 0, 0, 0.18) 52%,
+            rgba(0, 0, 0, 0.68) 86%
+          );
+      }
+
+      .bg-logo {
+        width: 108vw;
+        opacity: 0.44;
+        filter:
+          saturate(1.14)
+          brightness(1.08)
+          contrast(1.08)
+          drop-shadow(0 0 18px rgba(102, 255, 153, 0.28))
+          drop-shadow(0 0 34px rgba(255, 48, 48, 0.18));
+      }
+
+      .page {
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+        border-left: 0;
+        border-right: 0;
+        background:
+          linear-gradient(135deg, rgba(255, 48, 48, 0.055), transparent 26%, rgba(102, 255, 153, 0.022) 55%, rgba(255, 48, 48, 0.042)),
+          rgba(4, 9, 7, 0.72);
+      }
+
+      .topbar {
+        padding: 18px var(--content-pad);
+        align-items: flex-start;
+        font-size: 10px;
+        line-height: 1.55;
+      }
+
+      .topbar span {
+        width: 100%;
+      }
+
+      .hero {
+        padding: 34px var(--content-pad) 8px;
+      }
+
+      .kicker {
+        font-size: 10px;
+        line-height: 1.7;
+        letter-spacing: 0.14em;
+      }
+
+      h1 {
+        font-size: clamp(54px, 20vw, 86px);
+        line-height: 0.88;
+        letter-spacing: -0.075em;
+        text-shadow:
+          2px 0 var(--red),
+          -2px 0 var(--cyan),
+          0 0 22px rgba(102, 255, 153, 0.36);
+      }
+
+      .subline {
+        margin-top: 20px;
+        font-size: 15px;
+        line-height: 1.7;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+        gap: 26px;
+        padding: 20px var(--content-pad) 30px;
+      }
+
+      .manifesto {
+        gap: 18px;
+        font-size: 17px;
+        line-height: 1.55;
+      }
+
+      .manifesto .verse {
+        font-size: clamp(24px, 8vw, 34px);
+        line-height: 1.18;
+      }
+
+      .manifesto .hook,
+      .manifesto .bar,
+      .manifesto .cut {
+        padding-left: 14px;
+      }
+
+      .manifesto .final-line {
+        font-size: clamp(32px, 11vw, 48px);
+        line-height: 1.04;
+      }
+
+      .side-card {
+        position: static;
+        order: 2;
+      }
+
+      .side-card header {
+        padding: 14px;
+        font-size: 11px;
+      }
+
+      .side-content {
+        padding: 16px 14px;
+        gap: 16px;
+      }
+
+      .side-quote {
+        font-size: 16px;
+      }
+
+      .side-list {
+        font-size: 13px;
+      }
+
+      button,
+      a.button {
+        width: 100%;
+        min-height: 46px;
+        padding: 13px 14px;
+        font-size: 13px;
+      }
+
+      .disclaimer {
+        margin: 0 var(--content-pad) 22px;
+        font-size: 11px;
+        line-height: 1.65;
+      }
+
+      .footer {
+        padding: 16px var(--content-pad);
+        font-size: 11px;
+      }
+
+      .footer span {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 390px) {
+      h1 {
+        font-size: clamp(48px, 19vw, 72px);
+      }
+
+      .manifesto {
+        font-size: 16px;
+      }
+
+      .manifesto .verse {
+        font-size: 23px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    ::selection {
+      color: #000;
+      background: var(--green);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="noise"></div>
+
+  <div class="bg-mark" aria-hidden="true">
+    <img src="./images/c0d3s1x.png" alt="" class="bg-logo" />
+  </div>
+
+  <div id="entryScreen" class="entry-screen" role="dialog" aria-modal="true" aria-label="Enter page">
+    <div class="entry-card">
+      <div class="entry-label">clarix.dev / entry signal</div>
+      <p class="entry-quote">
+        Kapag nasanay ka sa bulok,<br />
+        pati mali mukhang normal.
+      </p>
+      <p class="entry-sub">
+        Di ka ba napapagod?
+      </p>
+      <button class="entry-button" onclick="enterPage()">Dumilat ka naman!</button>
+    </div>
+  </div>
+
+  <main class="page">
+    <header class="topbar">
+      <span>clarix.dev / gising <span class="blink">_</span></span>
+      <span>Tanginang sistema yan, infinite loop ampota!</span>
+    </header>
+
+    <section class="hero">
+      <div class="kicker">para sa bansang sanay na sanay sa paulit-ulit at "okay na yan"</div>
+      <h1>Gising Na</h1>
+      <p class="subline">
+        Hindi ito talumpati. Hindi ito kampanya.
+        <strong>Paalala lang</strong> — lumilipas ang mukha, nag-iiba ang kulay,
+        pero minsan pareho pa rin ang laro.
+      </p>
+    </section>
+
+    <section class="layout">
+      <article class="manifesto">
+        <p class="verse">
+          Gising na!<br />
+          Hindi bago ang sakit,<br />
+          nagpalit lang ng mukha,<br />
+          nagpalit lang ng tugtog.
+        </p>
+
+        <p>
+          May dating pangalan,<br />
+          may bagong pangalan,<br />
+          may lumang pangako,<br />
+          may bagong palusot.
+        </p>
+
+        <p class="bar">
+          Sabi pagbabago.<br />
+          Sabi malasakit.<br />
+          Sabi disiplina.<br />
+          Sabi pagkakaisa.<br />
+          Sabi lang nang sabi.
+        </p>
+
+        <p>
+          Sa entablado, bida sila.<br />
+          Sa balita, biktima sila.<br />
+          Sa poster, bayani sila.<br />
+          Sa resibo, tahimik sila.
+        </p>
+
+        <p class="hook">
+          Kapag pera ang tanong,<br />
+          umiikot ang sagot.<br />
+          Kapag sala ang usapan,<br />
+          biglang kalaban ang nagtatanong.
+        </p>
+
+        <p>
+          Hindi relihiyon ang partido.<br />
+          Hindi dugo ang kwalipikasyon.<br />
+          Hindi apelyido ang solusyon.<br />
+          Hindi kulay ang katotohanan.
+        </p>
+
+        <p class="cut">
+          Huwag mong sambahin ang nakaupo.<br />
+          Huwag mong ipagtanggol ang hindi mo kilala.<br />
+          Huwag mong awayin ang kapwa mo lugi<br />
+          para lang sa taong hindi ka kilala.
+        </p>
+
+        <p>
+          Ang buwis, pawis 'yan.<br />
+          Ang boto, tiwala 'yan.<br />
+          Ang puwesto, trabaho 'yan.<br />
+          Ang bayan, hindi premyo.<br />
+          Hindi negosyo.<br />
+          Hindi mana.
+        </p>
+
+        <p class="hook">
+          Kung paulit-ulit ang daya,<br />
+          paulit-ulit din ang tanong.<br />
+          Kung paulit-ulit ang limot,<br />
+          paulit-ulit din ang tandaan.
+        </p>
+
+        <p>
+          Magbasa bago maniwala.<br />
+          Magtanong bago pumalakpak.<br />
+          Itabi ang resibo.<br />
+          Bantayan ang salita.<br />
+          Huwag magpaamo sa paawa.<br />
+          Huwag magpasilaw sa ingay.
+        </p>
+
+        <p class="bar">
+          Hindi lahat ng galit, tama.<br />
+          Hindi lahat ng tahimik, malinis.<br />
+          Hindi lahat ng sikat, may dangal.<br />
+          Hindi lahat ng legal, makatarungan.
+        </p>
+
+        <p>
+          Hindi kailangan ng gulo<br />
+          para hindi maging sunod-sunuran.<br />
+          Hindi kailangan ng dahas<br />
+          para maningil.<br />
+          Hindi kailangan ng idolo<br />
+          para magkaroon ng paninindigan.
+        </p>
+
+        <p class="final-line">
+          Nilagay mo ang kamay sa tapat ng yong puso, <br />
+          Sabay sabi mo pa ang mamatay ng dahil sa 'yo???
+        </p>
+      </article>
+
+      <aside class="side-card">
+        <header>Huwag kang tanga</header>
+
+        <div class="side-content">
+          <p class="side-quote">
+            “Hindi kailangan pumili ng santo.<br />
+            Kailangan lang tumigil<br />
+            sa pagsamba sa tao.”
+          </p>
+
+          <div class="side-list">
+            <span>Palit mukha, pareho ang galaw.</span>
+            <span>Palit kulay, pareho ang bulsa.</span>
+            <span>Palit slogan, pareho ang singil.</span>
+            <span>Kapag may resibo, huwag ipikit ang mata.</span>
+          </div>
+
+          <p class="side-note">
+            Hindi ito tungkol sa isang isyu lang. Tungkol ito sa ugaling paulit-ulit pinapatawad dahil mabilis tayong mapagod at mauto.
+          </p>
+
+          <div class="controls">
+            <button onclick="toggleSignal()">patugtugin / patahimikin</button>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="disclaimer">
+      <p><strong>note:</strong> This is a personal civic-expression page hosted on an owned domain. It does not claim any breach, bypass, leak, or unauthorized access.</p>
+      <p>This page does not impersonate any person, organization, movement, government office, or political group. It does not instruct or encourage hacking, doxxing, harassment, threats, vandalism, or illegal activity.</p>
+      <p>References to public issues are used as civic commentary. Verify information through credible sources before sharing or acting on it.</p>
+    </section>
+
+    <audio id="bgm" autoplay loop preload="auto">
+      <source src="./assets/signal-loop.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+
+    <footer class="footer">
+      <span><strong>ERROR:c0d3s1x</strong> // hindi panatiko, kinabukasan ng susunod na henerasyon ang kampo</span>
+      <span>kapag paulit-ulit ang palusot, paulit-ulit din dapat ang tanong.</span>
+    </footer>
+  </main>
+
+  <script>
+    const bgm = document.getElementById("bgm");
+    const entryScreen = document.getElementById("entryScreen");
+
+    bgm.volume = 0.15;
+
+    async function playSignal() {
+      try {
+        await bgm.play();
+      } catch (error) {
+        console.log("Audio playback did not start.", error);
+      }
+    }
+
+    async function enterPage() {
+      entryScreen.classList.add("hidden");
+      await playSignal();
+    }
+
+    async function toggleSignal() {
+      if (bgm.paused) {
+        await playSignal();
+      } else {
+        bgm.pause();
+      }
+    }
+  </script>
+</body>
 </html>
