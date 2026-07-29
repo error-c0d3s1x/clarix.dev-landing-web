@@ -256,6 +256,110 @@
       padding: 22px var(--content-pad) 34px;
     }
 
+    .context-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 16px var(--content-pad);
+      border-bottom: 1px solid rgba(255, 48, 48, 0.24);
+      box-shadow:
+        inset 0 -1px 0 rgba(102, 255, 153, 0.12),
+        0 12px 30px rgba(255, 48, 48, 0.05);
+      background: rgba(0, 0, 0, 0.22);
+    }
+
+    .signal-dock {
+      position: fixed;
+      right: clamp(12px, 2vw, 24px);
+      top: 50%;
+      bottom: auto;
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: stretch;
+      padding: 6px;
+      border: 1px solid rgba(102, 255, 153, 0.22);
+      background: rgba(0, 0, 0, 0.52);
+      box-shadow:
+        0 0 24px rgba(102, 255, 153, 0.12),
+        inset 0 0 18px rgba(255, 48, 48, 0.08);
+      backdrop-filter: blur(3px);
+      opacity: 0.38;
+      transform: translateY(-50%);
+      transition: opacity 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+
+    .signal-dock:hover,
+    .signal-dock:focus-within {
+      background: rgba(0, 0, 0, 0.78);
+      opacity: 0.96;
+    }
+
+    .signal-dock button,
+    .signal-dock a.button {
+      width: auto;
+      min-height: 32px;
+      padding: 7px 9px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .content-tabs {
+      display: grid;
+      gap: 22px;
+      min-width: 0;
+      max-width: 880px;
+    }
+
+    .tab-hero {
+      display: none;
+      gap: 18px;
+    }
+
+    .tab-hero .kicker,
+    .tab-hero .subline {
+      margin: 0;
+    }
+
+    .tab-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid rgba(102, 255, 153, 0.18);
+      box-shadow: 0 1px 0 rgba(255, 48, 48, 0.16);
+    }
+
+    .tab-button {
+      width: auto;
+      min-height: 42px;
+      border-color: rgba(102, 255, 153, 0.18);
+      border-bottom: 0;
+      color: var(--ash);
+      text-transform: uppercase;
+      letter-spacing: 0;
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    .tab-button[aria-selected="true"] {
+      color: var(--green);
+      background:
+        linear-gradient(180deg, rgba(102, 255, 153, 0.11), rgba(0, 0, 0, 0.24)),
+        rgba(0, 0, 0, 0.32);
+      box-shadow:
+        inset 0 2px 0 rgba(102, 255, 153, 0.34),
+        0 0 18px rgba(102, 255, 153, 0.12);
+    }
+
+    .tab-button:focus-visible {
+      outline: 2px solid var(--green);
+      outline-offset: 2px;
+    }
+
+    .tab-panel[hidden] {
+      display: none;
+    }
+
     .manifesto {
       display: grid;
       gap: 18px;
@@ -621,6 +725,10 @@
       .manifesto {
         max-width: none;
       }
+
+      .content-tabs {
+        max-width: none;
+      }
     }
 
     @media (max-width: 880px) {
@@ -727,6 +835,23 @@
         padding: 20px var(--content-pad) 30px;
       }
 
+      .content-tabs {
+        gap: 18px;
+      }
+
+      .tab-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        border-bottom: 0;
+      }
+
+      .tab-button {
+        width: 100%;
+        min-width: 0;
+        border-bottom: 1px solid rgba(102, 255, 153, 0.18);
+        text-align: center;
+      }
+
       .manifesto {
         gap: 18px;
         font-size: 17px;
@@ -778,6 +903,14 @@
         min-height: 46px;
         padding: 13px 14px;
         font-size: 13px;
+      }
+
+      .signal-dock button,
+      .signal-dock a.button {
+        width: auto;
+        min-height: 32px;
+        padding: 7px 9px;
+        font-size: 12px;
       }
 
       .pgp-card {
@@ -858,11 +991,43 @@
 
   <main class="page">
     <header class="topbar">
-      <span>clarix.dev / gising<span class="blink">_</span></span>
-      <span>Tanginang sistema yan, infinite loop ampota!</span>
+      <span id="contextLabel">clarix.dev / pax silica<span class="blink">_</span></span>
+      <span id="contextSignal">PH soil, PH law. Basic service pa rin ang test.</span>
     </header>
 
-    <section class="hero">
+    <nav class="context-tabs tab-list" role="tablist" aria-label="clarix.dev contexts">
+      <button
+        id="tab-pax-silica"
+        class="tab-button"
+        type="button"
+        role="tab"
+        aria-selected="true"
+        aria-controls="panel-pax-silica"
+        data-main-tab="pax-silica"
+        onclick="switchMainTab('pax-silica')"
+      >
+        pax silica
+      </button>
+      <button
+        id="tab-gising-na"
+        class="tab-button"
+        type="button"
+        role="tab"
+        aria-selected="false"
+        aria-controls="panel-gising-na"
+        data-main-tab="gising-na"
+        onclick="switchMainTab('gising-na')"
+      >
+        gising na
+      </button>
+    </nav>
+
+    <div class="signal-dock" aria-label="Global signal controls">
+      <button type="button" onclick="toggleSignal()">signal audio</button>
+      <a class="button" href="/">reset</a>
+    </div>
+
+    <section class="hero" hidden>
       <div class="kicker">para sa bansang sanay na sanay sa paulit-ulit at "okay na yan"</div>
       <h1>Gising Na</h1>
       <p class="subline">
@@ -872,8 +1037,161 @@
       </p>
     </section>
 
+    <section class="hero" id="contextHero">
+      <div class="kicker" id="contextKicker">para sa bansang kayang mangarap ng silicon future pero dapat hindi nakakalimot sa basic</div>
+      <h1 id="contextTitle">Pax Silica</h1>
+      <p class="subline" id="contextSubline">
+        Hindi ito kontra-teknolohiya.
+        <strong>Priority check lang</strong> - kung mabilis ang tugon sa mega-project,
+        dapat mabilis din sa klasrum, palikuran, portal, at ordinaryong serbisyo.
+      </p>
+    </section>
+
     <section class="layout">
-      <article class="manifesto">
+      <section class="content-tabs" aria-label="Main content">
+        <article
+          id="panel-pax-silica"
+          class="tab-panel manifesto"
+          role="tabpanel"
+          aria-labelledby="tab-pax-silica"
+        >
+          <div class="tab-hero">
+            <div class="kicker">para sa bansang kayang mangarap ng silicon future pero dapat hindi nakakalimot sa basic</div>
+            <h1>Pax Silica</h1>
+            <p class="subline">
+              Hindi ito kontra-teknolohiya.
+              <strong>Priority check lang</strong> - kung mabilis ang tugon sa mega-project,
+              dapat mabilis din sa classroom, gorvernment websites, at ordinaryong serbisyo.
+            </p>
+          </div>
+
+          <p class="verse">
+            Pax Silica.<br />
+            Ang pangarap: chips, AI,<br />
+            data centers, future-ready hubs.<br />
+            Ang tanong:<br />
+            future-ready ba ang lipunan?
+          </p>
+
+          <p>
+            Hindi masama ang malaking plano.<br />
+            Hindi mali ang humabol sa mundo.<br />
+            Pero kapag mabilis ang briefing<br />
+            para sa silicon,<br />
+            bakit mabagal ang hangin<br />
+            sa classroom?
+          </p>
+
+          <p class="bar">
+            Sabi safeguards.<br />
+            Sabi compliance.<br />
+            Sabi jobs.<br />
+            Sabi investment.<br />
+            Sabi world-class.<br />
+            Sana pati basic services, world-class.
+          </p>
+
+          <p>
+            Bago ang hub,<br />
+            may eskwelahang parang oven.<br />
+            Bago ang AI,<br />
+            may batang nagpapaypay<br />
+            habang minememorya ang future.<br />
+            Bago ang smart corridor,<br />
+            may CR na hindi mo gustong ipaliwanag.
+          </p>
+
+          <p class="hook">
+            Kapag project ang malaki,<br />
+            ang salita, polished.<br />
+            Kapag serbisyo ang maliit,<br />
+            ang sagot, pasensya.<br />
+            Kapag foreign deck ang kausap,<br />
+            ang slide, malinaw.<br />
+            Kapag mamamayan ang gumagamit,<br />
+            ang website, amoy archive.
+          </p>
+
+          <p>
+            Hindi kailangang pumili<br />
+            sa pagitan ng progreso<br />
+            at dignidad.<br />
+            Dapat sabay.<br />
+            Dapat pareho.<br />
+            Dapat hindi laging pang-render lang<br />
+            ang ganda ng gobyerno.
+          </p>
+
+          <p class="cut">
+            Huwag gawing altar ang innovation.<br />
+            Huwag gawing excuse ang investment.<br />
+            Huwag ipagpalit ang public basics<br />
+            sa press release na makintab.
+          </p>
+
+          <p class="bar">
+            Kung lupa ng Pilipinas,<br />
+            batas ng Pilipinas.<br />
+            Kung may gate, badge, lease,<br />
+            o foreign logo sa loob,<br />
+            hindi nawawala ang mapa.<br />
+            Dito pa rin ang jurisdiction.
+          </p>
+
+          <p>
+            Welcome ang investment.<br />
+            Welcome ang trabaho.<br />
+            Welcome ang technology.<br />
+            Pero dapat malinaw ang hangganan:<br />
+            sino ang nagbabantay,<br />
+            sinong batas ang sinusunod,<br />
+            at saan tatakbo ang ordinaryong tao<br />
+            kapag may aberya.
+          </p>
+
+          <p class="hook">
+            Kung kaya ang global supply chain,<br />
+            kayanin ang local service line.<br />
+            Kung kaya ang AI roadmap,<br />
+            kayanin ang maintenance.<br />
+            Kung kaya ang billion-dollar pitch,<br />
+            kayanin ang gripo, bentilador, portal, resibo.
+          </p>
+
+          <p class="bar">
+            Hindi ito "ayaw sa progreso."<br />
+            Ito ay tanong sa priority.<br />
+            Hindi ito "kontra sa trabaho."<br />
+            Ito ay singil sa kalidad.<br />
+            Hindi ito "takot sa future."<br />
+            Ito ay paalala:<br />
+            future means nothing<br />
+            kapag basic dignity ay offline.
+          </p>
+
+          <p class="final-line">
+            Silicon ang pangarap<br />
+            Balanseng serbisyo ang sukatan.
+          </p>
+        </article>
+
+        <article
+          id="panel-gising-na"
+          class="tab-panel manifesto"
+          role="tabpanel"
+          aria-labelledby="tab-gising-na"
+          hidden
+        >
+          <div class="tab-hero">
+            <div class="kicker">para sa bansang sanay na sanay sa paulit-ulit at "okay na yan"</div>
+            <h1>Gising Na</h1>
+            <p class="subline">
+              Hindi ito talumpati. Hindi ito kampanya.
+              <strong>Paalala lang</strong> â€” lumilipas ang mukha, nag-iiba ang kulay,
+              pero minsan pareho pa rin ang laro.
+            </p>
+          </div>
+
         <p class="verse">
           Gising na!<br />
           Hindi bago ang sakit,<br />
@@ -969,33 +1287,30 @@
           Nilagay mo ang kamay sa tapat ng yong puso, <br />
           Sabay sabi mo pa ang mamatay ng dahil sa 'yo???
         </p>
-      </article>
+        </article>
+      </section>
 
-      <aside class="side-card">
-        <header>Huwag kang tanga</header>
+      <aside class="side-card" id="contextSideCard">
+        <header id="contextSideHeader">Priority check</header>
 
         <div class="side-content">
-          <p class="side-quote">
-            “Hindi kailangan pumili ng santo.<br />
-            Kailangan lang tumigil<br />
-            sa pagsamba sa tao.”
+          <p class="side-quote" id="contextSideQuote">
+            Hindi high-tech ang bayan<br />
+            kung basic service,<br />
+            low battery.
           </p>
 
-          <div class="side-list">
-            <span>Palit mukha, pareho ang galaw.</span>
-            <span>Palit kulay, pareho ang bulsa.</span>
-            <span>Palit slogan, pareho ang singil.</span>
-            <span>Kapag may resibo, huwag ipikit ang mata.</span>
+          <div class="side-list" id="contextSideList">
+            <span>AI hub? Sige. Bentilador muna rin.</span>
+            <span>PH soil, PH law. No floating jurisdiction.</span>
+            <span>World-class pitch, public-class basics.</span>
+            <span>Progress na hindi nararamdaman, press release lang.</span>
           </div>
 
-          <p class="side-note">
-            Hindi ito tungkol sa isang isyu lang. Tungkol ito sa ugaling paulit-ulit pinapatawad dahil mabilis tayong pagurin.
+          <p class="side-note" id="contextSideNote">
+            Hindi ito pag-ayaw sa proyekto. Panawagan ito na ang bilis ng ambisyon ay pantayan ng bilis sa eskwela, palikuran, portal, at everyday service.
           </p>
 
-          <div class="controls">
-            <button onclick="toggleSignal()">patugtugin / patahimikin</button>
-            <a class="button" href="/">balik sa simula</a>
-          </div>
         </div>
       </aside>
     </section>
@@ -1038,7 +1353,7 @@ YW51MiwyLjUrMS4xMiwyLDEACgkQJVwxjdjxA21nRAD/WpAIg79u32c6wTIjfXE9
 71wfhRODXwoUU5gVDGvGnN0BAKhtRVDpp4fXGo9EC8Kl0raqrdGcDybafKWZmfol
 eY4G
 =oC+N
------END PGP SIGNATURE------</pre>
+-----END PGP SIGNATURE-----</pre>
         </details>
 
         <details class="pgp-details" open>
@@ -1054,7 +1369,7 @@ eY4G
             </ul>
           </code>
           <pre id="publicKeyBlock" class="pgp-block">-----BEGIN PGP PUBLIC KEY BLOCK-----
-Comment: User ID:	ERROR:c0d3s1x <error.c0d3s1x@gmail.com>
+Comment: User ID:	ERROR:c0d3s1x &lt;error.c0d3s1x@gmail.com&gt;
 Comment: Valid from:	5/12/2026 6:54 PM
 Comment: Type:	255-bit EdDSA (secret key available)
 Comment: Usage:	Signing, Encryption, Certifying User IDs
@@ -1090,16 +1405,89 @@ ATRYgxoddF31HiVCgAD/XmotgU63TuFzag7aRcn/0uIFTHWzHmEbO3/d9Lie5wA=
     </audio>
 
     <footer class="footer">
-      <span><strong>ERROR:c0d3s1x</strong> // hindi panatiko, kinabukasan ng susunod na henerasyon ang kampo</span>
-      <span>kapag paulit-ulit ang palusot, paulit-ulit din dapat ang tanong.</span>
+      <span><strong>ERROR:c0d3s1x</strong> // Walang kulay, kampo o idolo.</span>
+      <span>Resibo bago ingay. Katotohanan bago panig.</span>
     </footer>
   </main>
 
   <script>
     const bgm = document.getElementById("bgm");
     const entryScreen = document.getElementById("entryScreen");
+    const mainTabs = Array.from(document.querySelectorAll("[data-main-tab]"));
+    const mainPanels = Array.from(document.querySelectorAll(".tab-panel"));
+    const contextLabel = document.getElementById("contextLabel");
+    const contextSignal = document.getElementById("contextSignal");
+    const contextKicker = document.getElementById("contextKicker");
+    const contextTitle = document.getElementById("contextTitle");
+    const contextSubline = document.getElementById("contextSubline");
+    const contextSideHeader = document.getElementById("contextSideHeader");
+    const contextSideQuote = document.getElementById("contextSideQuote");
+    const contextSideList = document.getElementById("contextSideList");
+    const contextSideNote = document.getElementById("contextSideNote");
+
+    const contexts = {
+      "pax-silica": {
+        label: "clarix.dev / pax silica",
+        signal: "PH soil, PH law. Basic service pa rin ang test.",
+        kicker: "para sa bansang kayang mangarap ng silicon future pero dapat hindi nakakalimot sa basic",
+        title: "Pax Silica",
+        subline: "Hindi ito kontra-teknolohiya. <strong>Priority check lang</strong> - kung mabilis ang tugon sa mega-project, dapat mabilis din sa classroom, goverment websites, at ordinaryong serbisyo.",
+        sideHeader: "Priority check",
+        sideQuote: "Hindi high-tech ang bayan<br />kung basic service,<br />low battery.",
+        sideItems: [
+          "AI hub? Sige. Bentilador muna rin.",
+          "PH soil, PH law. No floating jurisdiction.",
+          "World-class pitch, public-class basics.",
+          "Progress na hindi nararamdaman, press release lang."
+        ],
+        sideNote: "Hindi ito pag-ayaw sa proyekto. Panawagan ito na ang bilis ng ambisyon ay pantayan ng bilis sa eskwela, palikuran, portal, at everyday service."
+      },
+      "gising-na": {
+        label: "clarix.dev / gising",
+        signal: "Tanginang sistema yan, infinite loop ampota!",
+        kicker: "para sa bansang sanay na sanay sa paulit-ulit at \"okay na yan\"",
+        title: "Gising Na",
+        subline: "Hindi ito talumpati. Hindi ito kampanya. <strong>Paalala lang</strong> - lumilipas ang mukha, nag-iiba ang kulay, pero minsan pareho pa rin ang laro.",
+        sideHeader: "Huwag kang tanga",
+        sideQuote: "\"Hindi kailangan pumili ng santo.<br />Kailangan lang tumigil<br />sa pagsamba sa tao.\"",
+        sideItems: [
+          "Palit mukha, pareho ang galaw.",
+          "Palit kulay, pareho ang bulsa.",
+          "Palit slogan, pareho ang singil.",
+          "Kapag may resibo, huwag ipikit ang mata."
+        ],
+        sideNote: "Hindi ito tungkol sa isang isyu lang. Tungkol ito sa ugaling paulit-ulit pinapatawad dahil mabilis tayong mapagod."
+      }
+    };
 
     bgm.volume = 0.15;
+
+    function switchMainTab(tabName) {
+      const nextPanel = document.getElementById(`panel-${tabName}`);
+      const context = contexts[tabName];
+      if (!nextPanel || !context) return;
+
+      mainTabs.forEach((tab) => {
+        const isSelected = tab.dataset.mainTab === tabName;
+        tab.setAttribute("aria-selected", String(isSelected));
+      });
+
+      mainPanels.forEach((panel) => {
+        panel.hidden = panel.id !== `panel-${tabName}`;
+      });
+
+      contextLabel.innerHTML = `${context.label}<span class="blink">_</span>`;
+      contextSignal.textContent = context.signal;
+      contextKicker.textContent = context.kicker;
+      contextTitle.textContent = context.title;
+      contextSubline.innerHTML = context.subline;
+      contextSideHeader.textContent = context.sideHeader;
+      contextSideQuote.innerHTML = context.sideQuote;
+      contextSideList.innerHTML = context.sideItems.map((item) => `<span>${item}</span>`).join("");
+      contextSideNote.textContent = context.sideNote;
+    }
+
+    switchMainTab("pax-silica");
 
     async function playSignal() {
       try {
